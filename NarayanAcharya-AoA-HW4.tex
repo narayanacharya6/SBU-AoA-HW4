@@ -1,0 +1,177 @@
+\documentclass[11pt]{article}
+% Packages used by instructor %
+\usepackage{amsmath,amssymb,xspace,epsfig}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+% Package for new section on new page
+\usepackage{titlesec}
+
+%Package used for formatting lists%
+\usepackage[shortlabels]{enumitem}
+
+% Package used for setting up page margins %
+\usepackage{geometry}
+%\usepackage{showframe} % Used to clearly show the new margins %
+\newgeometry{vmargin={1in}, hmargin={1in,1in}}
+
+% Package used for adding hyperlinks %
+\usepackage{hyperref}
+
+% Package for multirow tables %
+\usepackage{multirow}
+\renewcommand{\arraystretch}{1.5}
+
+% Package for displaying algorithms %
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\newcommand{\Break}{\State \textbf{break} }
+
+% Package for Bib in ToC %
+\usepackage[nottoc]{tocbibind}
+
+% Break algorithm across pages %
+\makeatletter
+\newenvironment{breakablealgorithm}
+{% \begin{breakablealgorithm}
+	\begin{center}
+		\refstepcounter{algorithm}% New algorithm
+		\hrule height.8pt depth0pt \kern2pt% \@fs@pre for \@fs@ruled
+		\renewcommand{\caption}[2][\relax]{% Make a new \caption
+			{\raggedright\textbf{\ALG@name~\thealgorithm} ##2\par}%
+			\ifx\relax##1\relax % #1 is \relax
+			\addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##2}%
+			\else % #1 is not \relax
+			\addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##1}%
+			\fi
+			\kern2pt\hrule\kern2pt
+		}
+	}{% \end{breakablealgorithm}
+		\kern2pt\hrule\relax% \@fs@post for \@fs@ruled
+	\end{center}
+}
+\makeatother
+
+% Page Header %
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Ananlysis of Algorithms \\ Home Work 4}
+\rhead{Narayan Acharya \\ 112734365}
+\lfoot{\leftmark}
+\rfoot{\thepage}
+
+% Do not indent pargraphs everywhere %
+\setlength\parindent{0pt}
+
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{1pt}
+
+\title{
+	Analysis of Algorithms - Home Work 4\\[2mm]
+	\large CSE 548 Fall '19\\[1mm]
+	\href{mailto:jgao@cs.stonybrook.edu}{\textit{Prof. Jie Gao}}
+}
+\author{
+	\small Submission By: \\
+	\href{mailto:nacharya@cs.stonybrook.edu}{Narayan Acharya} \\
+	\small 112734365
+}
+\date{\vspace{-5ex}}
+\begin{document}
+
+% Set up title
+\maketitle
+\thispagestyle{fancy} % Make this page use fancy header
+
+% Set up Table of Contents
+\tableofcontents
+
+\clearpage
+
+\section{Question 1} Textbook [Kleinberg \& Tardos] Chapter 7, page 415, problem \#6. \\
+\textbf{Solution:} \\
+
+Consider the following notation: We denote the set of all switches by $ A $ and the set of all the fixtures by $ B $. We wish to pair every item in set $ A $ with at least one item in set $ B $ such that the entire setup of switches and fixtures is ergonomic. A setup is ergonomic if we can pair every fixture to a switch such that the line joining each pair is not interrupted by any wall. The problem is one where we wish to find perfect matching between in the bipartite graphy constructed using the two sets $ A $ and $ B $. \\
+
+Let us construct a bipartite graph $ G = (V, E)$ where $ V = A \cup B $
+and $ E $ is the set of all the edges from $ A $ to $ B $ if a switch can be connected to a fixture without being interrupted by a wall. \\
+
+Now we can find perfect matching, if one exists, using the Max Flow Algorithm. For this consider we have source node $ s $ that initiates a flow of $ n $ over $ n $ edges of capacity 1, one to each of the nodes in set $ A $. We also have a sink node $ t $ that accepts flow of $ n $ over $ n $ edges of capacity 1 from each of the nodes in set $ B $. \\
+
+The correctness and time complexity can be inferred from \textit{7.38 in Kleinberg and Tardos (Page 370)}. We can say that the time complexity is $ O(mn) $ where $ m $ is the number of edges and $ n $ is the number of nodes in the bipartite graph. Thus we have an algorithm with time complexity polynomial in $ m $ and $ n $. In our case $ m $ is bound by $ n^2 $ as there is a possibility of every switch having a matching with every fixture. Thus the total running time of our solution will be bound by $ O(n^3) $.
+
+\clearpage
+\section{Question 2} Textbook [Kleinberg \& Tardos] Chapter 7, page 415, problem \#11. \\
+\textbf{Solution:} \\
+
+
+\clearpage
+\section{Question 3} Textbook [Kleinberg \& Tardos] Chapter 7, page 415, problem \#13. \\
+\textbf{Solution:} \\
+
+In order to apply known and applicable algorithms for Max Flow, we make the following changes to our graph, say $ G $, without lifting any of the restrictions posed by the question, to create a new graph, say $ G' $.
+\begin{enumerate}
+	\item Replace every node, say $ v $, with two nodes, say $ v_i $ and $ v_o $. The edge between the two new nodes will have a capacity of $ c_v $ which is the initial capacity of our node $ v $. The edge coming into $ v $ will now be connected to $ v_i $ and the edge coming out of $ v $ wi now be coming out of $ v_o $. The capacities of these edges are unchanged.
+	\item All other edges can be assumed to have an edge capacity of $ \infty $
+\end{enumerate}
+
+Next, in order to ensure that we can apply the Max-Flow algorithm to $ G' $ and get the same flow as $ G $ we need to prove that the $ G' $ follows both the edge capacity constraint as well as flow conservation constraint.
+
+\begin{enumerate}
+	\item Capacity Constraint: For each node $ v $, we know that $ c_v \ge 0 $. Thus the edges that we create have positive edge capacities equal to $ c_v $. Thus the flow, $ f(v_i \to v_o) $, going through this new edge will obey the capacity constraint, $ 0 \le f(v_i \to v_o) \le c_v $.
+	\item Flow Conservation Constraint: The edge we added in $ G' $ is bound by $ c_v $. Any outgoing flow from $ v_i $ cannot exceed $ c_v $. This ensure that any incoming flow into $ v_o $ will not exceed $ c_v $. So, overall whatever comes into $ v_i $ will be going through $ v_o $ and out of it, bound by $ c_v $. This ensures, flow is conserved even in $ G' $.
+\end{enumerate}
+
+Thus, we can say that the maximum flow is bound by the capacity if the minimum capacity cut in both $ G $ and $ G' $. Say we use Edmond-Karp algorithm, we have an algorithmic time complexity of $ O(mn^2) $ where $ m $ is the number of edges and $ n $ is the number of nodes in our graph $ G $. But given that we've introduced $ n $ more edges after we replaced our nodes with 2 nodes in our node-capacitated network, the running time is now $ O((m+n)n^2) $, which is polynomial in $ m $ and $ n $.
+
+\clearpage
+\section{Question 4} Textbook [Kleinberg \& Tardos] Chapter 7, page 415, problem \#15. \\
+\textbf{Solution:} \\
+
+Construct a bipartite graph as follows - Create set of nodes, say $ P $, one node identifying each of $ n $ people involved. Create another set of nodes, say $ D $, one node identifying each of the days for which the persons are expected to be cooking. We add an edge from a node in $ P $ to a node in $ D $ based on the person's availability to cook on that day. \\
+
+Next we consider the partial solution that we have from Alanis. The assignment of people to days from Alanis can be considered to be an $ n-1 $ matching because for a particular day $ d_l $ we have no assignments because 2 people, $ p_i $ and $ p_j $ were assigned the same day, $ d_k $. \\
+
+In order to correct the schedule we need to build up from the partial assignments that we already have. This can be done by the following process.
+
+\begin{enumerate}
+	\item Remove edge from either $ p_i $ to $ d_k $ or $ p_j $ to $ d_k $. Thus, we no longer have $ n $ edges but have $ n-1 $ edges depicting the $ n-1 $ correct matchings that we have so far.
+	\item Add a source node, $ s $, that initiates a flow of value $ n $ over $ n $ edges of edge capacity 1, one to each of the nodes in $ P $. Add a sink node, $ t $, that accepts a flow of $ n $ over $ n $ edges of capacity of $ 1 $ each, from the $ n $ nodes in $ D $.
+	\item Construct residual graph from the current state of the graph that has $ s $, $ P $, $ D $ and $ t $.
+	\item Look for an augmenting path. If we manage to find an augmenting path then we can push our matching from $ n-1 $ to $ n $. This will be our perfect matching.
+\end{enumerate}
+
+The running time of this process is only bound by the time it will take to find the augmenting path. We can use any of the techniques discussed in class to get this. The running time is essentially bound by $ O(m) $. In our case, $ m $ can take a maximum value of $ n^2 $ for there can be a maximum of $ n^2 $ edges between $ P $ and $ D $. Thus the running time of the algorithm is as required, $ O(n^2) $.
+
+\clearpage
+\section{Question 5} Textbook [Kleinberg \& Tardos] Chapter 7, page 415, problem \#16. \\
+\textbf{Solution:} \\
+
+Construct a bipartite graph as follows - Create a set of nodes, say $ P $, one node identifying each of the $ n $ people who are viewers of the ads by advertisers. Create another set of nodes, say $ A $, one identifying each of the the m advertisers who are showing these ads. We draw an edge from the a person to an advertiser, based on person's registration information if they belong to a certain demographic for which the advertiser has a targeted ad. \\
+
+Next, we create a source node, $ s $, from which we have initiate a flow of value $ n $, over $ n $ edges each with a capacity of 1. We also create a sink node, $ t $, which accepts $ m $ incoming edges. The only constraint here is that for each of these $ m $ edges, we need to enforce a minimum capacity or lower bound constraint of value of $ r_i $ for the $ i^{th} $ advertiser. This condition will help us ensure that contract with each of the advertisers is upheld. \\
+
+This means that our problem is now similar to a \textit{Circulation with Demands problem [See Kleinberg \& Tardos, page 382]}. Here, our demand is modeled by the value $ r_i $ for the $ i^{th} $ advertiser.
+The demand on the source node, $ s $, if $ -\Sigma r_i $ and that on the sink node, $ t $, if $ -\Sigma r_i $ will ensure that feasible circulation exists. If a feasible circulation exists it implies that all our constraints are taken care of, which includes the minimum number of users targeted for a particular minute for each of the $ m $ advertisers.
+
+\clearpage
+\section{Question 6} Textbook [Kleinberg \& Tardos] Chapter 7, page 415, problem \#24. \\
+\textbf{Solution:} \\
+
+
+\clearpage
+\bibliographystyle{unsrt}
+\begin{thebibliography}{9}
+	\bibitem{Amanpreet Singh} 
+	Amanpreet Singh,
+	\\\texttt{Discussed approaches with Amanpreet Singh (SBU ID - 112044129)}
+	\bibitem{Atharva Urdhwareshe} 
+	Atharva Urdhwareshe,
+	\\\texttt{Discussed approaches with Atharva Urdhwareshe (SBU ID - 112671765)}
+	
+\end{thebibliography}
+
+\end{document}
