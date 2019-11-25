@@ -107,6 +107,15 @@ The correctness and time complexity can be inferred from \textit{7.38 in Kleinbe
 \section{Question 2} Textbook [Kleinberg \& Tardos] Chapter 7, page 415, problem \#11. \\
 \textbf{Solution:} \\
 
+The claim from the friends is false and can be proved so using a counter-example.
+
+In order to construct a counter-example build a bipartite graph as follow - Create a set of $ b $ nodes, say $ A $, and another set of $ b $ nodes, say $ B $. Number nodes in both $ A $ and $ B $ from 1 to $ b $. Add edges such that the $ i^{th} $ node in $ A $ connects to the $ i^{th} $ node in $ B $ and the $ i^th $ node in $ B $ connects to the $ (i+1)^{th} $ node in $ A $. All edges are of capacity 1.\\
+
+Next, add a source node, $ s $, and a sink node, $ t $. Add $ b $ edges of capacity 1 from $ s $, one to each of the nodes in $ A $ and $ b $ of capacity 1, one from each of nodes in $ B $ to $ t $. \\
+
+Now, if we select the augmenting path in the first path to be $ s \to A_1 \to B_1 \to A_2 \ldots A_b \to B_b \to t$ we have a flow value of 1 from $ s $ to $ t $. Next, as per the Forward-Only Algorithm suggested, we do not consider any of the backward edges from the residual graph so constructed. But if we do so, we are left with no path from $ s $ to $ t $ in the residual graph. Thus, we end and claim that the max flow is 1. But, clearly the max flow for our bipartite graph is $ b $. Thus, we have failed to reach our potential. \\
+
+Given, $ b $ is expected to be independent of the structure of our bipartite graph and we can choose our $ b $ to be absurdly large but our flow will always max out at 1. Thus, this proves our case for the counter-example. Hence, we can say that the claim is false!
 
 \clearpage
 \section{Question 3} Textbook [Kleinberg \& Tardos] Chapter 7, page 415, problem \#13. \\
@@ -161,6 +170,18 @@ The demand on the source node, $ s $, if $ -\Sigma r_i $ and that on the sink no
 \section{Question 6} Textbook [Kleinberg \& Tardos] Chapter 7, page 415, problem \#24. \\
 \textbf{Solution:} \\
 
+Consider the following steps in order to determine if a graph, say $ G $, has a unique minimum cut or not.
+
+\begin{enumerate}
+	\item Apply Max-Flow on $ G $ to then infer the minimum s-t cut by applying any graph traversal algorithm on the residual graph $ G_f $ for max flow graph. Say the max flow obtained is $ f $.
+	\item Split the vertices into two sets, $ S $ and $ T $ such that source, $ s $, and all nodes reachable from $ s $ go into $ S $ while all other nodes including $ t $ go to set $ T $.
+	\item Increase the edge capacities of all the edges on the s-t cut by one to create a new graph $ G' $.
+	\item Calculate max flow for $ G' $ and call it $ f' $.
+	\item If $ f' = f $, the s-t cut obtained in the first step is not the unique minimum s-t cut as there exists another set of edges that can achieve the same flow value.
+	\item If $ f' > f $, every time we add 1 to the edge capacities of the edges on the s-t cut, the s-t cut obtained in the first step is the unique minimum s-t cut.
+\end{enumerate}
+
+Running time for the above algorithm is a linear summation of calculating the max-flow and then use graph traversal, say BFS and do this number of times. Max-flow can be calculated in polynomial time in $ m $ and $ n $ where $ m $ is the number of edges while $ n $ is the number of nodes in the graph G. BFS, too, can be done in polynomial time in $ m $. The number of time we run this is bound by $ m+1 $ in order to isolate if there is a unique minimum cut possible or not. Thus, our algorithm is run in polynomial time.
 
 \clearpage
 \bibliographystyle{unsrt}
